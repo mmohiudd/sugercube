@@ -1,4 +1,4 @@
-sugar-cube
+sugarcube
 ==========
 
 let's bake a pie
