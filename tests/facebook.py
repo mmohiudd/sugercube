@@ -6,8 +6,8 @@ import sys
 lib_path = os.path.abspath('..')
 sys.path.append(lib_path)
 
-from sugarcube.settings import SETTINGS
-from sugarcube.facebook import Facebook
+from sugercube.settings import SETTINGS
+from sugercube.facebook import Facebook
 
 
 class TestFacebook(unittest.TestCase):
