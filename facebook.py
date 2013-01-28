@@ -41,6 +41,9 @@ class Facebook(object):
     def get_access_token(self):
         return self.access_token
 
+    def set_access_token(self, access_token):
+        self.access_token = access_token
+
     def get_app_access_token(self):
         return ("%s|%s") % (self.config['app_id'], self.config['app_secret'])  # generic app access token
 
