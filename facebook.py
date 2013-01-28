@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class Facebook(object):
-    access_token = None
     domain_map = {
         'api': 'https://api.facebook.com/',
         'api_video': 'https://api-video.facebook.com/',
@@ -55,6 +54,7 @@ class Facebook(object):
             if method is "GET":
                 r = requests.get(url, data=data)
             elif method is "POST":
+                # tries to make a post 3 times in case of failure
                 r = requests.post(url, data=data, config={'max_retries': 3})
             elif method is "PUT":
                 r = requests.put(url, data=data)
