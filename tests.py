@@ -1,17 +1,16 @@
 import unittest
+import json
+
 from settings import SETTINGS
 from facebook import Facebook
 
 
-class TestSugercube(unittest.TestCase):
+class TestFacebook(unittest.TestCase):
     def setUp(self):
         self.app_id = SETTINGS['app_id']
         self.app_secret = SETTINGS['app_secret']
 
         self.facebook = Facebook(SETTINGS)
-        self.test_user = {
-            'id': "100005126973855"
-        }
 
     def test_app_access_token(self):
         """
@@ -36,5 +35,64 @@ class TestSugercube(unittest.TestCase):
             self.facebook.get_app_access_token()
         )
 
-suite = unittest.TestLoader().loadTestsFromTestCase(TestSugercube)
+    def test_batch_call_with_fql(self):
+        """
+        test a batch call with fql
+        """
+        # 19292868552 is Facebook developers page
+        batch = [
+            {  # 0
+                'method': "GET",
+                'relative_url': """fql?q=SELECT name, fan_count,website
+                FROM page WHERE page_id = 19292868552""",
+            },
+            {  # 1
+                'method': "GET",
+                'relative_url': """%s?fields=link""" % (self.app_id),
+            }
+        ]
+
+        responses = self.facebook.api("", "POST", {
+                'batch': batch
+            })
+
+        body = json.loads(responses[0]['body'])
+
+        # graph call returns result data inside the 'data' variable
+        self.assertEqual(
+            body['data'][0]['website'],
+            "http://developers.facebook.com")
+
+    def test_batch_call_with_graph(self):
+        """
+        test batch call with graph
+        """
+        # 19292868552 is Facebook developers page
+        batch = [
+            {  # 0
+                'method': "GET",
+                'relative_url': """fql?q=SELECT name, fan_count,website
+                FROM page WHERE page_id = 19292868552""",
+            },
+            {  # 1
+                'method': "GET",
+                'relative_url': """%s?fields=link""" % (self.app_id),
+            }
+        ]
+
+        responses = self.facebook.api("", "POST", {
+                'batch': batch
+            })
+
+        # graph call returns result data in the body
+        body = json.loads(responses[1]['body'])
+
+        link = ("http://www.facebook.com/apps/application.php?id=%s") \
+        % (self.app_id)
+
+        self.assertEqual(body['link'], link)
+        self.assertEqual(body['id'], self.app_id)
+
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestFacebook)
 unittest.TextTestRunner(verbosity=2).run(suite)
