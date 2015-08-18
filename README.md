@@ -1,7 +1,7 @@
 Sugercube
 ===
 
-Sugercube is the main ingredient for making scoail-able py. 
+Sugercube is the main ingredient for making socail-able py. 
 
 *In other words*
 
